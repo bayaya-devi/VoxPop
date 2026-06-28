@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poster un Article</title>
+    
+    <style>
+        /* ========== BASE ========== */
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f3f0 0%, #e8e3dc 100%);
+            min-height: 100vh;
+        }
+
+        /* ========== UTILITAIRES ========== */
+        .hidden {
+            display: none !important;
+        }
+
+        /* ========== SIDEBAR ========== */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 70px;
+            width: 80px;
+            height: calc(100vh - 70px);
+            background: rgba(212, 196, 176, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+            z-index: 999;
+            gap: 15px;
+        }
+
+        .sidebar-btn {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.3);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #5a5248;
+        }
+
+        .sidebar-btn:hover {
+            background: rgba(196, 181, 161, 0.8);
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(196, 181, 161, 0.4);
+        }
+
+        .sidebar-btn.active {
+            background: #c4b5a1;
+            box-shadow: 0 0 20px rgba(196, 181, 161, 0.6);
+        }
+
+        /* ========== TOPBAR ========== */
+        .topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(232, 227, 220, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            padding: 0 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            gap: 15px;
+        }
+
+        .topbar-title {
+            font-size: 2em;
+            font-weight: bold;
+            color: #5a5248;
+            margin: 0;
+        }
+
+        /* ========== CONTENU PRINCIPAL ========== */
+        .content {
+            margin-left: 80px;
+            margin-top: 70px;
+            padding: 40px;
+            color: #5a5248;
+            max-width: 1200px;
+        }
+
+        /* ========== FORMULAIRE ARTICLE ========== */
+        .article-form {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #5a5248;
+            font-size: 1.1em;
+        }
+
+        .form-group input[type="text"],
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #d4c4b0;
+            background-color: #f5f3f0;
+            color: #5a5248;
+            font-size: 1em;
+            font-family: inherit;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #c4b5a1;
+            background-color: #fff;
+        }
+
+        .article-title-input {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .article-description {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .article-content {
+            min-height: 300px;
+            resize: vertical;
+        }
+
+        /* ========== UPLOAD MÉDIA ========== */
+        .media-upload {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .upload-box {
+            position: relative;
+            width: 200px;
+            height: 150px;
+            border: 2px dashed #d4c4b0;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: #f5f3f0;
+        }
+
+        .upload-box:hover {
+            border-color: #c4b5a1;
+            background-color: #fff;
+        }
+
+        .upload-box input[type="file"] {
+            display: none;
+        }
+
+        .upload-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .upload-text {
+            font-size: 0.9em;
+            color: #7a6f5d;
+            text-align: center;
+        }
+
+        .media-preview {
+            position: relative;
+            width: 200px;
+            height: 150px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .media-preview img,
+        .media-preview video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .remove-media {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(231, 76, 60, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ========== BOUTONS ========== */
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border-radius: 8px;
+            border: none;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: #d4c4b0;
+            color: #5a5248;
+        }
+
+        .btn-primary:hover {
+            background-color: #c4b5a1;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(196, 181, 161, 0.4);
+        }
+
+        .btn-secondary {
+            background-color: #e8e3dc;
+            color: #5a5248;
+        }
+
+        .btn-secondary:hover {
+            background-color: #d4c4b0;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media screen and (max-width: 768px) {
+            .sidebar {
+                width: 60px;
+            }
+
+            .content {
+                margin-left: 60px;
+                padding: 20px;
+            }
+
+            .upload-box,
+            .media-preview {
+                width: 100%;
+                max-width: 200px;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- BARRE VERTICALE GAUCHE -->
+    <div class="sidebar">
+        <button class="sidebar-btn active" title="Accueil">🏠</button>
+        <button class="sidebar-btn" onclick="alert('Profil')" title="Profil">🕴️</button>
+        <button class="sidebar-btn" onclick="alert('Déconnexion')" title="Me déconnecter">🚪</button>
+    </div>
+
+    <!-- BARRE HORIZONTALE HAUT -->
+    <div class="topbar">
+        <h1 class="topbar-title">VoxPop - Créer un Article</h1>
+    </div>
+
+    <!-- CONTENU PRINCIPAL -->
+    <div class="content">
+        <form class="article-form" onsubmit="return publierArticle(event)">
+            <!-- Titre -->
+            <div class="form-group">
+                <label for="titre">Titre de l'article *</label>
+                <input type="text" id="titre" class="article-title-input" placeholder="Entrez le titre de votre article..." required>
+            </div>
+
+            <!-- Description courte -->
+            <div class="form-group">
+                <label for="description">Description courte *</label>
+                <textarea id="description" class="article-description" placeholder="Résumé de l'article en quelques lignes..." required></textarea>
+            </div>
+
+            <!-- Contenu -->
+            <div class="form-group">
+                <label for="contenu">Contenu de l'article *</label>
+                <textarea id="contenu" class="article-content" placeholder="Rédigez le contenu complet de votre article..." required></textarea>
+            </div>
+
+            <!-- Médias (photos/vidéos) -->
+            <div class="form-group">
+                <label>Médias (2 maximum)</label>
+                <div class="media-upload" id="media-container">
+                    <div class="upload-box" onclick="document.getElementById('media1').click()">
+                        <div class="upload-icon">📷</div>
+                        <div class="upload-text">Ajouter une photo<br>ou vidéo</div>
+                        <input type="file" id="media1" accept="image/*,video/*" onchange="previewMedia(this, 0)">
+                    </div>
+                    
+                    <div class="upload-box" onclick="document.getElementById('media2').click()">
+                        <div class="upload-icon">📷</div>
+                        <div class="upload-text">Ajouter une photo<br>ou vidéo</div>
+                        <input type="file" id="media2" accept="image/*,video/*" onchange="previewMedia(this, 1)">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Boutons d'action -->
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">📤 Publier l'article</button>
+                <button type="button" class="btn btn-secondary" onclick="resetForm()">🗑️ Réinitialiser</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const mediaFiles = [null, null];
+
+        function previewMedia(input, index) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                mediaFiles[index] = file;
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const container = input.parentElement;
+                    const isVideo = file.type.startsWith('video');
+                    
+                    container.innerHTML = `
+                        <div class="media-preview">
+                            ${isVideo ? 
+                                `<video src="${e.target.result}" controls></video>` :
+                                `<img src="${e.target.result}" alt="Preview">`
+                            }
+                            <button type="button" class="remove-media" onclick="removeMedia(${index})">×</button>
+                        </div>
+                    `;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function removeMedia(index) {
+            mediaFiles[index] = null;
+            const container = document.getElementById(`media${index + 1}`).parentElement;
+            container.innerHTML = `
+                <div class="upload-icon">📷</div>
+                <div class="upload-text">Ajouter une photo<br>ou vidéo</div>
+                <input type="file" id="media${index + 1}" accept="image/*,video/*" onchange="previewMedia(this, ${index})">
+            `;
+            container.onclick = () => document.getElementById(`media${index + 1}`).click();
+        }
+
+        function publierArticle(event) {
+            event.preventDefault();
+            
+            const titre = document.getElementById('titre').value;
+            const description = document.getElementById('description').value;
+            const contenu = document.getElementById('contenu').value;
+            
+            const article = {
+                titre,
+                description,
+                contenu,
+                medias: mediaFiles.filter(f => f !== null).length,
+                date: new Date().toLocaleDateString('fr-FR')
+            };
+            
+            console.log('Article à publier:', article);
+            alert(`✅ Article "${titre}" publié avec succès !\n\n📅 Date: ${article.date}\n📝 Description: ${description.substring(0, 50)}...\n📷 Médias: ${article.medias}`);
+            
+            return false;
+        }
+
+        function resetForm() {
+            if (confirm('Voulez-vous vraiment réinitialiser le formulaire ?')) {
+                document.querySelector('.article-form').reset();
+                mediaFiles[0] = null;
+                mediaFiles[1] = null;
+                removeMedia(0);
+                removeMedia(1);
+            }
+        }
+    </script>
+</body>
+</html>

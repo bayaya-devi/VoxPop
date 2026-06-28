@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publier une video - VoxPop</title>
+    
+    <style>
+        /* ========== BASE ========== */
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f3f0 0%, #e8e3dc 100%);
+            min-height: 100vh;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* ========== SIDEBAR ========== */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 70px;
+            width: 80px;
+            height: calc(100vh - 70px);
+            background: rgba(212, 196, 176, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+            z-index: 999;
+            gap: 15px;
+        }
+
+        .sidebar-btn {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.3);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #5a5248;
+        }
+
+        .sidebar-btn:hover {
+            background: rgba(196, 181, 161, 0.8);
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(196, 181, 161, 0.4);
+        }
+
+        .sidebar-btn.active {
+            background: #c4b5a1;
+            box-shadow: 0 0 20px rgba(196, 181, 161, 0.6);
+        }
+
+        /* ========== TOPBAR ========== */
+        .topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(232, 227, 220, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            padding: 0 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .topbar-title {
+            font-size: 2em;
+            font-weight: bold;
+            color: #5a5248;
+            margin: 0;
+        }
+
+        /* ========== CONTENU PRINCIPAL ========== */
+        .content {
+            margin-left: 80px;
+            margin-top: 70px;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* ========== FORMULAIRE DE CRÉATION ========== */
+        .creation-container {
+            max-width: 800px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .creation-container h1 {
+            color: #5a5248;
+            font-size: 2em;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        /* Champs du formulaire */
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #5a5248;
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        .form-group input[type="text"],
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #d4c4b0;
+            border-radius: 8px;
+            background-color: #f5f3f0;
+            color: #5a5248;
+            font-size: 1em;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #c4b5a1;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(196, 181, 161, 0.3);
+        }
+
+        .form-group textarea {
+            min-height: 250px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        /* Compteur de caractères */
+        .char-counter {
+            text-align: right;
+            color: #7a6f5d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        /* Upload d'image */
+        .upload-zone {
+            border: 2px dashed #d4c4b0;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: #f5f3f0;
+        }
+
+        .upload-zone:hover {
+            border-color: #c4b5a1;
+            background-color: #fff;
+        }
+
+        .upload-zone input[type="file"] {
+            display: none;
+        }
+
+        .upload-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .preview-image {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        /* Options de publication */
+        .options-container {
+            display: flex;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .option-item label {
+            color: #5a5248;
+            cursor: pointer;
+            margin: 0;
+            font-weight: normal;
+        }
+
+        /* Boutons d'action */
+        .actions-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 40px;
+        }
+
+        .btn {
+            position: relative;
+            padding: 15px 40px;
+            border-radius: 50px;
+            border: none;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 10px 10px 0 10px;
+            border-style: solid;
+        }
+
+        .btn-primary {
+            background-color: #d4c4b0;
+            color: #5a5248;
+        }
+
+        .btn-primary::after {
+            border-color: #b8a894 transparent transparent transparent;
+        }
+
+        .btn-primary:hover {
+            background-color: #c4b5a1;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(196, 181, 161, 0.4);
+        }
+
+        .btn-secondary {
+            background-color: #e8e3dc;
+            color: #5a5248;
+        }
+
+        .btn-secondary::after {
+            border-color: #d4c4b0 transparent transparent transparent;
+        }
+
+        .btn-secondary:hover {
+            background-color: #d4c4b0;
+            transform: translateY(-2px);
+        }
+
+        .btn-cancel {
+            background-color: transparent;
+            color: #7a6f5d;
+            border: 2px solid #d4c4b0;
+        }
+
+        .btn-cancel::after {
+            display: none;
+        }
+
+        .btn-cancel:hover {
+            background-color: rgba(212, 196, 176, 0.2);
+        }
+
+        /* Tags */
+        .tags-container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .tag {
+            padding: 8px 15px;
+            background: rgba(212, 196, 176, 0.3);
+            border-radius: 20px;
+            font-size: 0.9em;
+            color: #5a5248;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .tag:hover {
+            background: rgba(196, 181, 161, 0.5);
+        }
+
+        .tag.selected {
+            background: #d4c4b0;
+            border-color: #c4b5a1;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media screen and (max-width: 768px) {
+            .sidebar {
+                width: 60px;
+            }
+
+            .content {
+                margin-left: 60px;
+                padding: 20px;
+            }
+
+            .creation-container {
+                padding: 25px;
+            }
+
+            .options-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .actions-container {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <button class="sidebar-btn" onclick="window.location.href='pageofficiel.html'" title="Accueil">🏠</button>
+        <button class="sidebar-btn" onclick="window.location.href='Profil.html'" title="Profil">🕴️</button>
+        <button class="sidebar-btn" onclick="window.location.href='acceuil.html'" title="Me déconnecter">🚪</button>
+    </div>
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+        <h1 class="topbar-title">VoxPop</h1>
+    </div>
+
+    <!-- CONTENU PRINCIPAL -->
+    <div class="content">
+        <div class="creation-container">
+            <h1>Publier une video</h1>
+
+            <form id="postForm">
+                <!-- Titre -->
+                <div class="form-group">
+                    <label for="titre">Titre de votre video :</label>
+                    <input type="text" id="titre" name="titre" placeholder="..." maxlength="100" required>
+                    <div class="char-counter">
+                        <span id="titre-count">0</span>/100
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description de votre video:</label>
+                    <input type="text" id="description" name="description" placeholder="..." maxlength="250" required>
+                    <div class="char-counter">
+                        <span id="titre-count">0</span>/250
+                    </div>
+                </div>                
+
+                <!-- Upload image -->
+                <div class="form-group">
+                    <label>Ajouter une video</label>
+                    <div class="upload-zone" onclick="document.getElementById('image-upload').click()">
+                        <div class="upload-icon">📷</div>
+                        <p>Cliquez pour ajouter une video</p>
+                        <p style="font-size: 0.9em; color: #7a6f5d;">JPG, PNG ou GIF - Max 5 Mo</p>
+                        <input type="file" id="image-upload" accept="image/*">
+                    </div>
+                    <img id="preview" class="preview-image" alt="Aperçu">
+                </div>
+
+                <!-- Options -->
+                <div class="form-group">
+                    <label>Options de publication</label>
+                    <div class="options-container">
+                        <div class="option-item">
+                            <input type="checkbox" id="commentaires" name="commentaires" checked>
+                            <label for="commentaires">Autoriser les commentaires</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Boutons d'action -->
+                <div class="actions-container">
+                    <button type="submit" class="btn btn-primary">📤 Publier</button>
+                    <button type="button" class="btn btn-cancel" onclick="annuler()">❌ Annuler</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="creervideo.js"></script>   
+</body>
+</html>

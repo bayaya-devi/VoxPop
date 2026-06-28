@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poster</title>
+    
+    <style>
+        /* ========================================
+           CSS POUR LA PAGE OFFICIELLE
+        ======================================== */
+
+        /* ========== BASE ========== */
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f3f0 0%, #e8e3dc 100%);
+            min-height: 100vh;
+        }
+
+        /* ========== UTILITAIRES ========== */
+        .hidden {
+            display: none !important;
+        }
+
+        /* ========== SIDEBAR ========== */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 70px;
+            width: 80px;
+            height: calc(100vh - 70px);
+            background: rgba(212, 196, 176, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+            z-index: 999;
+            gap: 15px;
+        }
+
+        .sidebar-btn {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.3);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #5a5248;
+        }
+
+        .sidebar-btn:hover {
+            background: rgba(196, 181, 161, 0.8);
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(196, 181, 161, 0.4);
+        }
+
+        .sidebar-btn.active {
+            background: #c4b5a1;
+            box-shadow: 0 0 20px rgba(196, 181, 161, 0.6);
+        }
+
+        /* ========== TOPBAR ========== */
+        .topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(232, 227, 220, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            padding: 0 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            gap: 15px;
+        }
+
+        .topbar-title {
+            font-size: 2em;
+            font-weight: bold;
+            color: #5a5248;
+            margin: 0;
+        }
+
+        /* ========== BARRE DE RECHERCHE ========== */
+        #search-bar {
+            position: fixed;
+            left: 0;
+            top: 70px;
+            height: 60px;
+            width: 300px;
+            background: rgba(232, 227, 220, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            z-index: 999;
+            transition: all 0.3s ease-in-out;
+        }
+
+        #search-bar input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #d4c4b0;
+            background-color: #f5f3f0;
+            color: #5a5248;
+            font-size: 1em;
+        }
+
+        #search-bar input::placeholder {
+            color: #7a6f5d;
+        }
+
+        /* ========== CONTENU PRINCIPAL ========== */
+        .content {
+            margin-left: 80px;
+            margin-top: 70px;
+            padding: 40px;
+            color: #5a5248;
+        }
+
+        .content h1 {
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* ========== PAGES ========== */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        /* ========== BULLES ========== */
+        .bullebar {
+            position: fixed;
+            top: 70px;
+            left: 80px;
+            right: 0;
+            height: 100px;
+            background: rgba(232, 227, 220, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            padding: 0 30px;
+            overflow-x: auto;
+            gap: 15px;
+            z-index: 998;
+        }
+
+        .bulle {
+            min-width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #d4c4b0, #c4b5a1);
+            border: 3px solid rgba(90, 82, 72, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .bulle:hover {
+            transform: scale(1.1);
+            border-color: rgba(90, 82, 72, 0.8);
+            box-shadow: 0 5px 15px rgba(196, 181, 161, 0.5);
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media screen and (max-width: 768px) {
+            .sidebar {
+                width: 60px;
+            }
+
+            .content {
+                margin-left: 60px;
+                padding: 20px;
+            }
+
+            .topbar {
+                left: 0;
+            }
+
+            #search-bar {
+                left: 0;
+                width: calc(100% - 60px);
+            }
+
+            .article-card {
+                flex-direction: column;
+            }
+
+            .article-image {
+                width: 100%;
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- BARRE VERTICALE GAUCHE -->
+    <div class="sidebar">
+        <button class="sidebar-btn active" onclick="showPage('home')" title="Accueil">🏠</button>
+        <button class="sidebar-btn" onclick="window.location.href='Profil.html'" title="Profil">🕴️</button>
+        <button class="sidebar-btn" onclick="window.location.href='acceuil.html'" title="Me déconnecter">🚪</button>
+    </div>
+
+    <!-- BARRE DE RECHERCHE -->
+    <div id="search-bar" class="hidden">
+        <input type="text" placeholder="Rechercher...">
+    </div>
+
+    <!-- BARRE HORIZONTALE HAUT -->
+    <div class="topbar">
+        <h1 class="topbar-title">VoxPop</h1>
+    </div>
+
+    <script src="profil.js"></script>
+    <script src="pageofficiel.js"></script>
+</body>
+</html>

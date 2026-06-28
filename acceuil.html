@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>Page d'accueil</title>
+    
+    <style>
+        /* ========================================
+           CSS POUR LA PAGE D'ACCUEIL
+        ======================================== */
+
+        /* ========== BASE ========== */
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f3f0 0%, #e8e3dc 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* ========== CONTENU ========== */
+        .content {
+            text-align: center;
+            color: #5a5248;
+            margin-bottom: 40px;
+        }
+
+        .page-accueil h1 {
+            font-size: 3em;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            color: #5a5248;
+            animation: fadeIn 1s ease;
+        }
+
+        .page-accueil h3 {
+            font-size: 1.5em;
+            margin: 0;
+            color: #7a6f5d;
+            font-weight: normal;
+            animation: fadeIn 1.5s ease;
+        }
+
+        /* ========== BOUTONS ========== */
+        .groupe-button {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            position: relative;
+            display: inline-block;
+            padding: 20px 40px;
+            border-radius: 50px;
+            border: none;
+            background-color: #d4c4b0;
+            color: #5a5248;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+.btn::after {
+    content: "";
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 10px 10px 0 10px;
+    border-style: solid;
+    border-color: #b8a894 transparent transparent transparent;
+}
+
+        .btn:hover {
+            background-color: #c4b5a1;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* ========== ANIMATIONS ========== */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media screen and (max-width: 768px) {
+            .page-accueil h1 {
+                font-size: 2em;
+            }
+
+            .page-accueil h3 {
+                font-size: 1.2em;
+                padding: 0 20px;
+            }
+
+            .groupe-button {
+                flex-direction: column;
+                gap: 15px;
+                padding: 0 20px;
+            }
+
+            .btn {
+                padding: 15px 30px;
+                font-size: 1em;
+            }
+        }
+       /* ========== TOPBAR ========== */
+        .topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(232, 227, 220, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            padding: 0 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            gap: 15px;
+        }
+
+        .topbar-title {
+            font-size: 2em;
+            font-weight: bold;
+            color: #5a5248;
+            margin: 0;
+        }
+        /* ========== SPLASH SCREEN ========== */
+/* Écran neutre */
+#splash {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(135deg, #f5f3f0 0%, #e8e3dc 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    overflow: hidden;
+}
+
+.logo {
+    position: relative;
+    font-size: 100px;
+    font-weight: bold;
+}
+
+/* Lettres de départ : hors écran, invisibles */
+.letter.v { left: -200px; opacity: 0; color: #5a5248; }  /* couleur Vox */
+.letter.p { left: 200px; opacity: 0; color: #7a6f5d; }   /* couleur Pop */
+
+/* Lettres finales : Vox à gauche, Pop à droite */
+.logo.animate .v { left: -60px; opacity: 1; }  /* Vox glisse depuis la gauche */
+.logo.animate .p { left: 60px; opacity: 1; }   /* Pop glisse depuis la droite */
+
+/* Transformation en texte complet */
+.logo.show-full .v::after { content: "ox"; font-size: 60px; margin-left: 5px; color: #5a5248; }
+.logo.show-full .p::after { content: "op"; font-size: 60px; margin-left: 5px; color: #7a6f5d; }
+
+
+
+@keyframes breathe {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.95; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* Contenu principal caché */
+#main-content { display: none; }
+
+    </style>
+</head>
+
+<body>
+     <!-- ANIMATION DU DEBUT -->
+<div id="splash">
+    <div class="logo">
+        <span class="letter v">V</span>
+        <span class="letter p">P</span>
+        <span class="full-name">VoxPop</span>
+    </div>
+</div>
+
+<div id="main-content">
+    <div class="content">
+        <div class="VoxPop">
+            <h1>Bienvenue dans VoxPop</h1>
+            <h2>L'info, par vous et pour vous !</h2>
+        </div>
+    </div>
+
+    <!-- BARRE HORIZONTALE HAUT -->
+    <div class="topbar">
+        <h1 class="topbar-title">VoxPop</h1>
+    </div>
+
+    <div class="groupe-button">
+        <a href="inscription.html" class="btn">M'inscrire</a>
+        <a href="seconnecter.html" class="btn">Me connecter</a>
+    </div>
+    </div>
+    <script>  
+window.addEventListener("load", () => {
+    const splash = document.getElementById("splash");
+    const logo = document.querySelector(".logo");
+    const main = document.getElementById("main-content");
+
+    // Étape 1 : Vox et Pop glissent depuis les côtés
+    setTimeout(() => {
+        logo.classList.add("animate");
+
+        // son xhoop
+        const audio = new Audio('xhoop.mp3');
+        audio.volume = 0.3;
+        audio.play();
+    }, 200);
+
+    // Étape 2 : transformation V → Vox et P → Pop
+    setTimeout(() => {
+        logo.classList.add("show-full");
+    }, 1500);
+
+    // Étape 3 : transition vers la page principale
+    setTimeout(() => {
+        splash.style.transition = "opacity 0.8s ease";
+        splash.style.opacity = 0;
+    }, 3000);
+
+    setTimeout(() => {
+        splash.style.display = "none";
+        main.style.display = "block";
+    }, 3800);
+});
+
+   </script>
+   
+</body>
+</html>
