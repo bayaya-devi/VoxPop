@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>Mon profil</title>
+    
+    <style>
+        /* ========================================
+           CSS POUR LA PAGE PROFIL
+        ======================================== */
+
+        /* ========== BASE ========== */
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f3f0 0%, #e8e3dc 100%);
+            min-height: 100vh;
+        }
+
+        h1 {
+            color: #5a5248;
+            text-align: center;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        p {
+            color: #7a6f5d;
+            text-align: center;
+            margin: 10px 0;
+            font-size: 1.1em;
+        }
+
+        /* ========== UTILITAIRES ========== */
+        .hidden {
+            display: none !important;
+        }
+
+        /* ========== SIDEBAR ========== */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 70px;
+            width: 80px;
+            height: calc(100vh - 70px);
+            background: rgba(212, 196, 176, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+            z-index: 999;
+            gap: 15px;
+        }
+
+        .sidebar-btn {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.3);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #5a5248;
+        }
+
+        .sidebar-btn:hover {
+            background: rgba(196, 181, 161, 0.8);
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(196, 181, 161, 0.4);
+        }
+
+        .sidebar-btn.active {
+            background: #c4b5a1;
+            box-shadow: 0 0 20px rgba(196, 181, 161, 0.6);
+        }
+
+        /* ========== TOPBAR ========== */
+        .topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(232, 227, 220, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            padding: 0 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            gap: 15px;
+        }
+
+        .topbar-title {
+            font-size: 2em;
+            font-weight: bold;
+            color: #5a5248;
+            margin: 0;
+        }
+
+        /* ========== BARRE DE RECHERCHE ========== */
+        #search-bar {
+            position: fixed;
+            left: 0;
+            top: 70px;
+            height: 60px;
+            width: 300px;
+            background: rgba(232, 227, 220, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            z-index: 1001;
+            transition: all 0.3s ease-in-out;
+        }
+
+        #search-bar input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #d4c4b0;
+            background-color: #f5f3f0;
+            color: #5a5248;
+            font-size: 1em;
+        }
+
+        #search-bar input::placeholder {
+            color: #7a6f5d;
+        }
+
+        /* ========== CONTENU PROFIL ========== */
+        .profil-container {
+            position: relative;
+            width: 100%;
+            margin-top: 70px;
+            margin-left: 80px;
+        }
+
+        /* ========== BANNIÈRE ========== */
+        .banniere {
+            width: calc(100% - 80px);
+            height: 200px;
+            background: linear-gradient(135deg, #d4c4b0, #c4b5a1);
+            background-size: cover;
+            background-position: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin: 0;
+        }
+
+        .banniere:hover {
+            opacity: 0.95;
+        }
+
+        /* ========== PHOTO DE PROFIL ========== */
+        .photo-profil-wrapper {
+            position: absolute;
+            bottom: 20px;
+            left: 30px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .photo-profil {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 5px solid white;
+            object-fit: cover;
+            background: linear-gradient(135deg, #d4c4b0, #c4b5a1);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .photo-profil-wrapper:hover .photo-profil {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Modal pour agrandir l'image banniere profil*/
+        .modal-zoom {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .modal-content {
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            font-size: 40px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .close-modal:hover {
+            color: #ff6b6b;
+        }
+
+        /* Titre et bio sous le profil */
+        body > h1:last-of-type {
+            margin-top: 30px;
+            margin-left: 110px;
+            text-align: left;
+        }
+
+        body > p {
+            margin-left: 110px;
+            text-align: left;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media screen and (max-width: 768px) {
+            .sidebar {
+                width: 60px;
+            }
+
+            .topbar {
+                left: 0;
+            }
+
+            #search-bar {
+                left: 0;
+                width: calc(100% - 60px);
+            }
+
+            .profil-container {
+                margin-left: 60px;
+            }
+
+            .banniere {
+                width: calc(100% - 60px);
+                height: 180px;
+            }
+
+            .photo-profil-wrapper {
+                bottom: 15px;
+                left: 20px;
+            }
+
+            .photo-profil {
+                width: 100px;
+                height: 100px;
+                border-width: 4px;
+            }
+
+            body > h1:last-of-type {
+                margin-left: 80px;
+                margin-top: 25px;
+            }
+
+            body > p {
+                margin-left: 80px;
+            }
+        }
+
+        /* Barre rubrique */
+        .barre-rubrique {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0 15px 0;
+            margin-left: 80px;
+            width: calc(100% - 80px);
+            background: rgba(232, 227, 220, 0.5);
+            box-sizing: border-box;
+        }
+
+        /* Titre à l'extrême gauche */
+        .nom-profil {
+            color: #5a5248;
+            margin: 0;
+            padding-left: 20px;
+            font-size: 1.5em;
+        }
+
+        /* Conteneur des boutons à droite */
+        .boutons-rubriques {
+            display: flex;
+            gap: 10px;
+            padding-right: 20px;
+        }
+
+        /* Boutons */
+        .btn-rubrique {
+            padding: 12px 30px;
+            background: #d4c4b0;
+            color: #5a5248;
+            border: none;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-rubrique:hover {
+            background: #c4b5a1;
+            transform: translateY(-2px);
+        }
+
+        .btn-rubrique.active {
+            background: #b8a894;
+        }
+
+        /* Input pour modifier le nom */
+        .edit-nom-profil {
+            background: rgba(255, 255, 255, 0.5);
+            border: 2px solid #d4c4b0;
+            border-radius: 8px;
+            color: #5a5248;
+            font-size: 1.5em;
+            padding: 5px 10px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            outline: none;
+        }
+
+        .edit-nom-profil:focus {
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Ajouter un curseur pointer sur le h2 */
+        .nom-profil {
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .nom-profil:hover {
+            color: #7a6f5d;
+        }
+
+        /* Input pour modifier la bio */
+        .edit-mabio {
+            background: rgba(255, 255, 255, 0.5);
+            border: 2px solid #d4c4b0;
+            border-radius: 8px;
+            margin-left: 20px;
+            color: #5a5248;
+            font-size: 1.5em;
+            padding: 5px 10px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            outline: none;
+        }
+
+        .edit-mabio:focus {
+            margin-left: 75px;
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Ajouter un curseur pointer sur le h2 */
+        .nom-mabio {
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .mabio:hover {
+            color: #7a6f5d;
+        }
+
+        .zone-contenu {
+    margin-left: 80px;
+    padding: 30px 30px 30px 100px;  
+    box-sizing: border-box;
+}
+
+        /* Sections de contenu */
+        .zone-contenu {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .zone-contenu.active {
+            display: block;
+        }
+
+        .zone-contenu h3 {
+            color: #5a5248;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+    .zone-contenu p {
+            color: #7a6f5d;
+            font-size: 1.2em;
+        }
+
+        /* Bouton flottant */
+        .btn-assistant {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #d4c4b0, #c4b5a1);
+            border: none;
+            font-size: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            z-index: 9998;
+            transition: all 0.3s ease;
+        }
+
+        .btn-assistant:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(196, 181, 161, 0.5);
+        }
+
+        /* Fenêtre assistant */
+        .assistant-container {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 350px;
+            height: 500px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            animation: slideUp 0.3s ease;
+        }
+
+        .assistant-container.hidden {
+            display: none;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Header */
+        .assistant-header {
+            background: linear-gradient(135deg, #d4c4b0, #c4b5a1);
+            color: #5a5248;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .assistant-header h3 {
+            margin: 0;
+            font-size: 1.2em;
+        }
+
+        .btn-fermer {
+            background: transparent;
+            border: none;
+            color: #5a5248;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* Messages */
+        .assistant-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            background: #f5f5f5;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            border-radius: 15px;
+            max-width: 80%;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .user-msg {
+            background: #d4c4b0;
+            color: #5a5248;
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .assistant-msg {
+            background: white;
+            color: #333;
+            border: 1px solid #e0e0e0;
+        }
+
+        /* Input */
+        .assistant-input {
+            display: flex;
+            padding: 15px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .assistant-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            margin-right: 10px;
+            font-size: 1em;
+        }
+
+        .assistant-input button {
+            background: #d4c4b0;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            font-size: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .assistant-input button:hover {
+            background: #c4b5a1;
+            transform: scale(1.1);
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ========== PARAMÈTRES ========== */
+        .parametres-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .param-section {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .param-section h4 {
+            color: #5a5248;
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(90, 82, 72, 0.2);
+        }
+
+        .param-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(90, 82, 72, 0.1);
+        }
+
+        .param-item:last-child {
+            border-bottom: none;
+        }
+
+        .param-label {
+            color: #5a5248;
+            font-size: 1em;
+        }
+
+        .param-description {
+            color: #7a6f5d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .param-input {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(90, 82, 72, 0.3);
+            border-radius: 8px;
+            color: #5a5248;
+            padding: 10px 15px;
+            font-size: 1em;
+            width: 250px;
+            outline: none;
+        }
+
+        .param-input:focus {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: #d4c4b0;
+        }
+
+        .param-select {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(90, 82, 72, 0.3);
+            border-radius: 8px;
+            color: #5a5248;
+            padding: 10px 15px;
+            font-size: 1em;
+            width: 250px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .param-select option {
+            background: #f5f3f0;
+            color: #5a5248;
+        }
+
+        .param-toggle {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: rgba(90, 82, 72, 0.2);
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .param-toggle.active {
+            background: #d4c4b0;
+        }
+
+        .param-toggle::after {
+            content: '';
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .param-toggle.active::after {
+            left: 32px;
+        }
+
+        .btn-save {
+            background: #d4c4b0;
+            color: #5a5248;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 30px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .btn-save:hover {
+            background: #c4b5a1;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(196, 181, 161, 0.4);
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 30px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+        }
+
+        /* Ajouter ce CSS pour les listes de contenu : */
+        .liste-contenu {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        /* Message état vide */
+        .vide-message {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            border: 2px dashed rgba(90, 82, 72, 0.2);
+        }
+
+        .vide-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .vide-message p {
+            color: #7a6f5d;
+            font-size: 1.2em;
+            margin-bottom: 25px;
+        }
+
+        .btn-creer {
+            background: #d4c4b0;
+            color: #5a5248;
+            border: none;
+            border-radius: 25px;
+            padding: 15px 35px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-creer:hover {
+            background: #c4b5a1;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(196, 181, 161, 0.4);
+        }
+
+        /* Cartes de contenu (pour quand il y aura du contenu) */
+        .carte-contenu {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(90, 82, 72, 0.1);
+        }
+
+        .carte-contenu:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        .carte-contenu img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .carte-contenu h4 {
+            color: #5a5248;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .carte-contenu p {
+            color: #7a6f5d;
+            font-size: 0.95em;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .carte-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #7a6f5d;
+            font-size: 0.9em;
+        }
+
+        .carte-date {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .carte-stats {
+            display: flex;
+            gap: 15px;
+        }
+
+        .carte-stat {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* ========== MODAL POST ========== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.2s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-container {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(212, 196, 176, 0.3);
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .btn-close-modal {
+            background: transparent;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #5a5248;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-close-modal:hover {
+            background: rgba(212, 196, 176, 0.3);
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .textarea-container {
+            position: relative;
+        }
+
+        #contenu-post {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: none;
+            background-color: transparent;
+            color: #5a5248;
+            font-size: 1.1em;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            resize: none;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        #contenu-post::placeholder {
+            color: #b8a894;
+            font-size: 1.1em;
+        }
+
+        .media-drop-zone {
+            border: 2px dashed transparent;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 10px 0;
+            text-align: center;
+            transition: all 0.3s ease;
+            display: none;
+        }
+
+        .media-drop-zone.active {
+            display: block;
+            border-color: #d4c4b0;
+            background: rgba(212, 196, 176, 0.1);
+        }
+
+        .media-drop-zone.dragover {
+            background: rgba(212, 196, 176, 0.3);
+            border-color: #c4b5a1;
+        }
+
+        .drop-text {
+            color: #7a6f5d;
+            font-size: 0.95em;
+        }
+
+        .media-preview {
+            position: relative;
+            margin: 10px 0;
+            display: none;
+        }
+
+        .media-preview.active {
+            display: block;
+        }
+
+        .preview-image,
+        .preview-video {
+            max-width: 100%;
+            max-height: 350px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-remove-media {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 32px;
+            height: 32px;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .btn-remove-media:hover {
+            background: rgba(0, 0, 0, 0.8);
+            transform: scale(1.1);
+        }
+
+        .modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid rgba(212, 196, 176, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+
+        .icon-btn {
+            width: 38px;
+            height: 38px;
+            background: transparent;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #7a6f5d;
+        }
+
+        .icon-btn:hover {
+            background: rgba(212, 196, 176, 0.3);
+            color: #5a5248;
+        }
+
+        .icon-btn.active {
+            background: rgba(212, 196, 176, 0.5);
+            color: #5a5248;
+        }
+
+        input[type="file"].hidden-input {
+            display: none;
+        }
+
+        .btn-publish {
+            position: relative;
+            padding: 10px 28px;
+            margin-bottom: 15px;
+            background: #d4c4b0;
+            color: #5a5248;
+            border: none;
+            border-radius: 50px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-publish::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 10px 10px 0 10px;
+            border-style: solid;
+            border-color: #b8a894 transparent transparent transparent;
+        }
+
+        .btn-publish:hover:not(:disabled) {
+            background: #c4b5a1;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(196, 181, 161, 0.4);
+        }
+
+        .btn-publish:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .char-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #7a6f5d;
+            font-size: 0.9em;
+        }
+
+        .char-count {
+            font-weight: 500;
+        }
+
+        .char-count.warning {
+            color: #e67e22;
+        }
+
+        .char-count.error {
+            color: #e74c3c;
+        }
+
+        .sondage-container {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(212, 196, 176, 0.1);
+            border: 1px solid rgba(212, 196, 176, 0.3);
+            border-radius: 12px;
+        }
+
+        .sondage-container.active {
+            display: block;
+        }
+
+        .sondage-header {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .sondage-question {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid #d4c4b0;
+            border-radius: 8px;
+            background: white;
+            color: #5a5248;
+            font-size: 1em;
+            font-weight: 500;
+            outline: none;
+        }
+
+        .sondage-question:focus {
+            border-color: #c4b5a1;
+            box-shadow: 0 0 10px rgba(196, 181, 161, 0.3);
+        }
+
+        .btn-remove-sondage {
+            width: 32px;
+            height: 32px;
+            background: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .btn-remove-sondage:hover {
+            background: rgba(231, 76, 60, 0.2);
+        }
+
+        .sondage-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .sondage-option {
+            padding: 10px 12px;
+            border: 1px solid #d4c4b0;
+            border-radius: 8px;
+            background: white;
+            color: #5a5248;
+            font-size: 0.95em;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .sondage-option:focus {
+            border-color: #c4b5a1;
+            box-shadow: 0 0 10px rgba(196, 181, 161, 0.3);
+        }
+
+        .sondage-option::placeholder {
+            color: #b8a894;
+        }
+
+        .btn-open-modal {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #d4c4b0, #c4b5a1);
+            border: none;
+            font-size: 32px;
+            cursor: pointer;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+            z-index: 9999;
+            transition: all 0.3s ease;
+        }
+
+        .btn-open-modal:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 8px 30px rgba(196, 181, 161, 0.5);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <button class="sidebar-btn" onclick="window.location.href='pageofficiel.html'" title="Accueil">🏠</button> 
+        <button class="sidebar-btn active" onclick="window.location.href='Profil.html'" title="Profil">🕴️</button>
+        <button class="sidebar-btn" onclick="window.location.href='acceuil.html'" title="Me déconnecter">🚪</button> 
+    </div>
+
+    <!-- BARRE DE RECHERCHE -->
+    <div id="search-bar" class="hidden">
+        <input type="text" placeholder="Rechercher...">
+    </div>
+
+    <!-- BARRE HORIZONTALE HAUT -->
+    <div class="topbar">
+        <h1 class="topbar-title">VoxPop</h1>
+    </div>
+
+    <!-- CONTENU PRINCIPAL -->
+    <div class="profil-container">
+        <!-- Bannière -->
+        <div class="banniere" id="banniere-utilisateur">
+            <input type="file" id="changer-banniere" accept="image/*" style="display:none">
+        </div>
+
+        <!-- Photo de profil -->
+        <div class="photo-profil-wrapper" onclick="document.getElementById('changer-photo').click()">
+            <img src="profil-vide.png" alt="Photo de profil" class="photo-profil" id="photo-profil">
+            <input type="file" id="changer-photo" accept="image/*" style="display:none">
+        </div>
+    </div>
+
+    <!-- rubrique barre -->
+    <div class="barre-rubrique">
+        <h2 class="nom-profil">Mon nom</h2>
+        <div class="boutons-rubriques">
+            <button class="btn-rubrique active" onclick="afficherContenu('posts')">Posts</button>
+            <button class="btn-rubrique" onclick="afficherContenu('articles')">Articles</button>
+            <button class="btn-rubrique" onclick="afficherContenu('videos')">Vidéo</button>
+            <button class="btn-rubrique" onclick="afficherContenu('parametres')">Paramètres</button>
+        </div>
+    </div>
+    <p class="mabio">Ma bio</p>
+
+    <!-- Zone où le contenu s'affiche -->
+    <div id="posts" class="zone-contenu active">
+        <h3>Mes posts</h3>
+        <div class="liste-contenu">
+            <div class="vide-message">
+                <div class="vide-icon">📝</div>
+                <p>Aucun post publié pour le moment</p>
+                <button class="btn-creer" onclick="ouvrirModalPost()">
+                    ➕ Écrire un post
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="articles" class="zone-contenu">
+        <h3>Mes articles</h3>
+        <div class="liste-contenu">
+            <div class="vide-message">
+                <div class="vide-icon">📰</div>
+                <p>Aucun article publié pour le moment</p>
+                <button class="btn-creer" onclick="window.location.href='creerarticle.html'">
+                    ➕ Rédiger un article
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="videos" class="zone-contenu">
+        <h3>Mes vidéos</h3>
+        <div class="liste-contenu">
+            <div class="vide-message">
+                <div class="vide-icon">🎬</div>
+                <p>Aucune vidéo publiée pour le moment</p>
+                <button class="btn-creer" onclick="window.location.href='creervideo.html'">
+                    ➕ Ajouter une vidéo
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="parametres" class="zone-contenu">
+        <div class="parametres-container">
+            <h3>Paramètres du profil</h3>
+            
+            <!-- Section Informations personnelles -->
+            <div class="param-section">
+                <h4>📝 Informations personnelles</h4>
+                
+                <div class="param-item">
+                    <div>
+                        <div class="param-label">Nom d'utilisateur</div>
+                        <div class="param-description">Votre nom affiché sur votre profil</div>
+                    </div>
+                    <input type="text" class="param-input" id="param-nom" placeholder="Mon nom" value="Mon nom">
+                </div>
+                
+                <div class="param-item">
+                    <div>
+                        <div class="param-label">Biographie</div>
+                        <div class="param-description">Décrivez-vous en quelques mots</div>
+                    </div>
+                    <input type="text" class="param-input" id="param-bio" placeholder="Ma bio" value="Ma bio">
+                </div>
+                
+<div class="param-item">
+                    <div>
+                        <div class="param-label">Email</div>
+                        <div class="param-description">Votre adresse email de contact</div>
+                    </div>
+                    <input type="email" class="param-input" placeholder="email@exemple.com">
+                </div>
+            </div>
+            
+            <!-- Section Confidentialité -->
+            <div class="param-section">
+                <h4>🔒 Confidentialité</h4>
+                
+                <div class="param-item">
+                    <div>
+                        <div class="param-label">Profil privé</div>
+                        <div class="param-description">Seuls vos abonnés peuvent voir vos posts</div>
+                    </div>
+                    <div class="param-toggle" onclick="toggleParam(this)"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL POST -->
+    <div class="modal-overlay" id="modalPost" onclick="fermerModalSiClicExterieur(event)">
+        <div class="modal-container" onclick="event.stopPropagation()">
+            <!-- HEADER -->
+            <div class="modal-header">
+                <button class="btn-close-modal" onclick="fermerModalPost()">✕</button>
+            </div>
+
+            <!-- BODY -->
+            <div class="modal-body">
+                <form id="postForm">
+                    <!-- Zone de texte -->
+                    <div class="textarea-container">
+                        <textarea 
+                            id="contenu-post" 
+                            name="contenu" 
+                            placeholder="Quoi de neuf ?" 
+                            maxlength="5000"
+                            required></textarea>
+                    </div>
+
+                    <!-- Zone de drop pour média -->
+                    <div class="media-drop-zone" id="dropZone">
+                        <div class="drop-text">📂 Glissez votre image ou vidéo ici</div>
+                    </div>
+
+                    <!-- Prévisualisation média -->
+                    <div class="media-preview" id="mediaPreview">
+                        <button type="button" class="btn-remove-media" onclick="supprimerMedia()">✕</button>
+                        <img id="previewImage" class="preview-image" style="display:none" alt="Aperçu">
+                        <video id="previewVideo" class="preview-video" style="display:none" controls></video>
+                    </div>
+
+                    <!-- Input file caché -->
+                    <input type="file" id="mediaUpload" class="hidden-input" accept="image/*,video/*">
+
+                    <!-- Sondage -->
+                    <div class="sondage-container" id="sondageContainer">
+                        <div class="sondage-header">
+                            <input type="text" class="sondage-question" id="sondageQuestion" placeholder="Posez votre question..." maxlength="200">
+                            <button type="button" class="btn-remove-sondage" onclick="supprimerSondage()">✕</button>
+                        </div>
+                        <div class="sondage-options">
+                            <input type="text" class="sondage-option" placeholder="Option 1" maxlength="50">
+                            <input type="text" class="sondage-option" placeholder="Option 2" maxlength="50">
+                            <input type="text" class="sondage-option" id="option3" placeholder="Option 3 (optionnel)" maxlength="50">
+                            <input type="text" class="sondage-option" id="option4" placeholder="Option 4 (optionnel)" maxlength="50">
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- FOOTER -->
+            <div class="modal-footer">
+                <div class="action-buttons">
+                    <button type="button" class="icon-btn" onclick="ouvrirSelecteurMedia()" title="Ajouter un média">
+                        📎
+                    </button>
+                    <button type="button" class="icon-btn" onclick="toggleSondage()" title="Créer un sondage">
+                        📊
+                    </button>
+                </div>
+
+                <div class="char-info">
+                    <span class="char-count" id="charCountPost">0/5000</span>
+                    <button type="submit" form="postForm" class="btn-publish" id="btnPublishPost" disabled>
+                        Publier
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="profil.js"></script>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Connexion — VoxPop</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f3f0 0%, #e8e3dc 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        form {
+            max-width: 400px;
+            width: 100%;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+        form label {
+            display: block;
+            margin-bottom: 5px;
+            margin-top: 10px;
+            font-weight: bold;
+            color: #5a5248;
+        }
+        form input[type="email"],
+        form input[type="password"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: 1px solid #d4c4b0;
+            font-size: 1em;
+            background-color: #f5f3f0;
+            color: #5a5248;
+            transition: all 0.3s ease;
+        }
+        form input:focus {
+            outline: none;
+            border-color: #c4b5a1;
+            background-color: #fff;
+        }
+        .mdpoublie {
+            color: #5a5248;
+            font-size: 0.95em;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 10px;
+        }
+        .mdpoublie:hover { text-decoration: underline; }
+        /* Message */
+        .msg {
+            display: none;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 0.95em;
+            text-align: center;
+        }
+        .msg.erreur { background: #fde8e8; color: #c0392b; border: 1px solid #f5c6c6; display: block; }
+        .msg.succes { background: #e8f5e9; color: #27ae60; border: 1px solid #c8e6c9; display: block; }
+        /* Boutons */
+        .btn {
+            position: relative;
+            display: inline-block;
+            padding: 15px 30px;
+            margin: 15px 5px 25px 5px;
+            border-radius: 50px;
+            border: none;
+            background-color: #d4c4b0;
+            color: #5a5248;
+            font-size: 1em;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .btn::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 10px 10px 0 10px;
+            border-style: solid;
+            border-color: #b8a894 transparent transparent transparent;
+        }
+        .btn:hover { background-color: #c4b5a1; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(196,181,161,0.4); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .btn-container { text-align: center; margin-top: 20px; }
+        @media (max-width: 600px) {
+            form { padding: 20px; margin: 20px; }
+            .btn { padding: 12px 25px; font-size: 0.9em; display: block; margin: 10px auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+
+    <form id="connexionForm">
+        <div class="msg" id="msg"></div>
+
+        <label for="email">Adresse e-mail :</label>
+        <input type="email" id="email" placeholder="Entrez votre adresse e-mail..." required>
+
+        <label for="password">Mot de passe :</label>
+        <input type="password" id="password" placeholder="Entrez votre mot de passe..." required>
+
+        <a href="oubliemdp1.html" class="mdpoublie">Mot de passe oublié ?</a>
+
+        <div class="btn-container">
+            <button type="submit" class="btn" id="btnConnexion">Me connecter</button>
+            <a href="index.html" class="btn">Retour</a>
+        </div>
+    </form>
+
+    <script>
+        const form  = document.getElementById('connexionForm');
+        const msgEl = document.getElementById('msg');
+        const btnEl = document.getElementById('btnConnexion');
+
+        function afficherMsg(texte, type) {
+            msgEl.textContent = texte;
+            msgEl.className = 'msg ' + type;
+        }
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value.trim();
+            const pass  = document.getElementById('password').value;
+
+            btnEl.disabled = true;
+            btnEl.textContent = 'Connexion en cours...';
+
+            try {
+                await VoxPop.connecterUtilisateur(email, pass);
+                afficherMsg('✅ Connexion réussie ! Redirection...', 'succes');
+                setTimeout(() => window.location.href = 'pageofficiel.html', 1000);
+            } catch (err) {
+                afficherMsg('❌ ' + err.message, 'erreur');
+                btnEl.disabled = false;
+                btnEl.textContent = 'Me connecter';
+            }
+        });
+    </script>
+</body>
+</html>
