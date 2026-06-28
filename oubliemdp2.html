@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Réinitialiser</title>
+    
+    <style>
+         /* ========== BASE ========== */
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f3f0 0%, #e8e3dc 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+       
+   /* ========== FORMULAIRE ========== */
+        form {
+            max-width: 400px;
+            width: 100%;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+
+        form label {
+            display: block;
+            margin-bottom: 5px;
+            margin-top: 10px;
+            font-weight: bold;
+            color: #5a5248;
+        }
+
+        form input[type="email"],
+        form input[type="password"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: 1px solid #d4c4b0;
+            font-size: 1em;
+            background-color: #f5f3f0;
+            color: #5a5248;
+            transition: all 0.3s ease;
+        }
+
+        form input[type="email"]:focus,
+        form input[type="password"]:focus {
+            outline: none;
+            border-color: #c4b5a1;
+            background-color: #fff;
+        }
+
+        /* ========== BOUTONS ========== */
+         .btn {
+            position: relative;
+            display: inline-block;
+            padding: 15px 30px;
+            margin: 15px 5px 25px 5px;
+            border-radius: 40px;
+            border: none;
+            background-color: #d4c4b0;
+            color: #5a5248;
+            font-size: 1em;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+              
+        }
+
+.btn::after {
+    content: "";
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 10px 10px 0 10px;
+    border-style: solid;
+    border-color: #b8a894 transparent transparent transparent;
+}
+
+        .btn:hover {
+            background-color: #c4b5a1;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(196, 181, 161, 0.4);
+        }
+
+        /* Conteneur pour centrer les boutons */
+        .btn-container {
+          margin-top: 20px;
+         display: flex;
+         justify-content: center;  /* Centre horizontalement les éléments flex */
+         align-items: center;      /* Centre verticalement (optionnel) */
+         gap: 10px;                /* Espacement entre les boutons (optionnel) */
+
+        }
+        /* ========== RESPONSIVE ========== */
+        @media screen and (max-width: 600px) {
+            form {
+                padding: 20px;
+                margin: 20px;
+            }
+            
+            .btn {
+                padding: 12px 25px;
+                font-size: 0.9em;
+                display: block;
+                margin: 10px auto;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+    <form method="post" action="oubliemdp3.html" onsubmit="return validerFormulaire()">
+        <label for="password">Code de confirmation : </label>
+        <input type="password" id="password" name="password" placeholder="Entrez le code reçu" required>
+
+        <div class="btn-container">
+            <button type="submit" class="btn">Confirmer</button>
+            <a href="acceuil.html" class="btn">Annuler</a>
+        </div>
+    </form>
+
+    <script>
+function validerFormulaire() {
+    const passwordInput = document.getElementById('password');
+    
+    if (!passwordInput.value.trim()) {
+        alert('Veuillez entrer le code reçu');
+        passwordInput.focus();
+        return false;
+    }
+    
+    window.location.href = 'oubliemdp3.html';
+    return false;
+}
+    </script>
+</body>
+</html>
