@@ -10,8 +10,8 @@
 //     fourni dans README.md pour créer les tables
 // ============================================================
 
-const SUPABASE_URL = 'REMPLACE_PAR_TON_URL_SUPABASE';
-const SUPABASE_ANON_KEY = 'REMPLACE_PAR_TA_CLE_ANON';
+const SUPABASE_URL = 'https://rafzxkaqlkqlzwhkzcda.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJhZnp4a2FxbGtxbHp3aGt6Y2RhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2NzU4MjgsImV4cCI6MjA5ODI1MTgyOH0.323Bsq2WAbsjhhNnJLNLzY6q58zfqyDqoilPxR0KspQ';
 
 // Import du client Supabase (chargé via CDN dans les HTML)
 const { createClient } = supabase;
